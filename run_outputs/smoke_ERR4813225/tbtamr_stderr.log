@@ -1,0 +1,69 @@
+[38;21m[INFO:07/23/2026 09:25:32 AM] You have provided reads as input - will now use mutAMR to generate vcf - please be patient.[0m
+[38;21m[INFO:07/23/2026 09:25:32 AM] Will now create directory for ERR4813225[0m
+[38;21m[INFO:07/23/2026 09:25:32 AM] Now running mkdir -p ERR4813225[0m
+[38;21m[INFO:07/23/2026 09:25:33 AM] [0m
+[38;21m[INFO:07/23/2026 09:25:33 AM] Checking /private/tmp/tbenv/lib/python3.14/site-packages/mutamr/references/Mtb_NC000962.3.fa exists[0m
+[38;21m[INFO:07/23/2026 09:25:33 AM] Checking ../reads/ERR4813225_1.fastq.gz exists[0m
+[38;21m[INFO:07/23/2026 09:25:33 AM] Checking ../reads/ERR4813225_2.fastq.gz exists[0m
+[38;21m[INFO:07/23/2026 09:25:33 AM] Generating alignment using bwa mem.[0m
+[38;21m[INFO:07/23/2026 09:25:33 AM] Now running bwa mem -T 50 -Y -M -R '@RG\tID:ERR4813225\tSM:ERR4813225' -t 8 /private/tmp/tbenv/lib/python3.14/site-packages/mutamr/references/Mtb_NC000962.3.fa ../reads/ERR4813225_1.fastq.gz ../reads/ERR4813225_2.fastq.gz | samclip --max 10 --ref /private/tmp/tbenv/lib/python3.14/site-packages/mutamr/references/Mtb_NC000962.3.fa.fai | samtools sort -n -l 0 -@ 8 -m 1000M -T /Users/weilu/.claude-science/orgs/22a9d49f-6861-4400-bf3f-0bc89e37b27d/workspaces/1586e53a-123f-40ce-b327-915b67b496b9/.tmp | samtools fixmate -m - - | samtools sort -l 0 -@ 8 -m 1000M -T /Users/weilu/.claude-science/orgs/22a9d49f-6861-4400-bf3f-0bc89e37b27d/workspaces/1586e53a-123f-40ce-b327-915b67b496b9/.tmp | samtools markdup -T /Users/weilu/.claude-science/orgs/22a9d49f-6861-4400-bf3f-0bc89e37b27d/workspaces/1586e53a-123f-40ce-b327-915b67b496b9/.tmp -r -s - - > ERR4813225/ERR4813225.bam[0m
+[38;21m[INFO:07/23/2026 09:25:58 AM] [0m
+[38;21m[INFO:07/23/2026 09:25:58 AM] Indexing bam[0m
+[38;21m[INFO:07/23/2026 09:25:58 AM] Now running samtools index ERR4813225/ERR4813225.bam[0m
+[38;21m[INFO:07/23/2026 09:25:58 AM] [0m
+[38;21m[INFO:07/23/2026 09:25:58 AM] Now running samtools coverage ERR4813225/ERR4813225.bam > ERR4813225/ERR4813225_stats.txt[0m
+[38;21m[INFO:07/23/2026 09:26:00 AM] [0m
+[38;21m[INFO:07/23/2026 09:26:00 AM] Alignment was successful![0m
+[38;21m[INFO:07/23/2026 09:26:00 AM] Calculating sizes for freebayes-parallel[0m
+[38;21m[INFO:07/23/2026 09:26:00 AM] Reference is 4485070 in length[0m
+[38;21m[INFO:07/23/2026 09:26:00 AM] Reference will be broken into 15 chunks approx 299004 in size[0m
+[38;21m[INFO:07/23/2026 09:26:00 AM] Now running fasta_generate_regions.py /private/tmp/tbenv/lib/python3.14/site-packages/mutamr/references/Mtb_NC000962.3.fa 299004 > ERR4813225/ref.txt[0m
+[38;21m[INFO:07/23/2026 09:26:00 AM] [0m
+[38;21m[INFO:07/23/2026 09:26:00 AM] Running freebayes for SNP detection.[0m
+[38;21m[INFO:07/23/2026 09:26:00 AM] Now running freebayes-parallel ERR4813225/ref.txt 8 -q 13 -m 60 -f /private/tmp/tbenv/lib/python3.14/site-packages/mutamr/references/Mtb_NC000962.3.fa -F 0.1 --haplotype-length -1 ERR4813225/ERR4813225.bam > ERR4813225/ERR4813225.raw.snps.vcf[0m
+[38;21m[INFO:07/23/2026 09:26:18 AM] [0m
+[38;21m[INFO:07/23/2026 09:26:18 AM] Filtering vcf[0m
+[38;21m[INFO:07/23/2026 09:26:18 AM] Now running bcftools view -c 1 ERR4813225/ERR4813225.raw.snps.vcf | bcftools norm -f /private/tmp/tbenv/lib/python3.14/site-packages/mutamr/references/Mtb_NC000962.3.fa | bcftools filter -e 'FMT/DP<20' | bcftools filter -i 'INFO/SAR>0 && INFO/SAF>0' -Oz -o ERR4813225/ERR4813225.snps.vcf.gz[0m
+[38;21m[INFO:07/23/2026 09:26:20 AM] [0m
+[38;21m[INFO:07/23/2026 09:26:20 AM] Indexing vcf[0m
+[38;21m[INFO:07/23/2026 09:26:20 AM] Now running bcftools index ERR4813225/ERR4813225.snps.vcf.gz[0m
+[38;21m[INFO:07/23/2026 09:26:20 AM] [0m
+[38;21m[INFO:07/23/2026 09:26:20 AM] Freebayes was successful!![0m
+[38;21m[INFO:07/23/2026 09:26:20 AM] Running delly[0m
+[38;21m[INFO:07/23/2026 09:26:20 AM] Running delly[0m
+[38;21m[INFO:07/23/2026 09:26:20 AM] Now running OMP_NUM_THREADS=8 delly call -t DEL -g /private/tmp/tbenv/lib/python3.14/site-packages/mutamr/references/Mtb_NC000962.3.fa ERR4813225/ERR4813225.bam -o ERR4813225/ERR4813225.delly.bcf[0m
+[38;21m[INFO:07/23/2026 09:26:22 AM] [0m
+[38;21m[INFO:07/23/2026 09:26:22 AM] Filtering vcf[0m
+[38;21m[INFO:07/23/2026 09:26:22 AM] Now running bcftools view -c 2 ERR4813225/ERR4813225.delly.bcf | bcftools view -e '(INFO/END-POS)>=100000' -Oz -o ERR4813225/ERR4813225.delly.vcf.gz[0m
+[38;21m[INFO:07/23/2026 09:26:22 AM] [0m
+[38;21m[INFO:07/23/2026 09:26:22 AM] Indexing vcf[0m
+[38;21m[INFO:07/23/2026 09:26:22 AM] Now running bcftools index ERR4813225/ERR4813225.delly.vcf.gz[0m
+[38;21m[INFO:07/23/2026 09:26:22 AM] [0m
+[38;21m[INFO:07/23/2026 09:26:22 AM] Combining vcf files[0m
+[38;21m[INFO:07/23/2026 09:26:22 AM] Now running bcftools concat -aD ERR4813225/ERR4813225.delly.vcf.gz ERR4813225/ERR4813225.snps.vcf.gz | bcftools norm -m -both | bcftools view -W -Oz -o ERR4813225/ERR4813225.concat.vcf.gz[0m
+[38;21m[INFO:07/23/2026 09:26:22 AM] [0m
+[38;21m[INFO:07/23/2026 09:26:22 AM] Wrangling snpEff DB[0m
+[38;21m[INFO:07/23/2026 09:26:22 AM] Annotating vcf file[0m
+[38;21m[INFO:07/23/2026 09:26:22 AM] Now running snpEff ann -dataDir . -c /private/tmp/tbenv/lib/python3.14/site-packages/mutamr/references/snpEff.config -noLog -noStats Mycobacterium_tuberculosis_h37rv ERR4813225/ERR4813225.concat.vcf.gz > ERR4813225/ERR4813225.annot.vcf[0m
+[38;21m[INFO:07/23/2026 09:26:28 AM] [0m
+[38;21m[INFO:07/23/2026 09:26:28 AM] Now running bgzip -f ERR4813225/ERR4813225.annot.vcf[0m
+[38;21m[INFO:07/23/2026 09:26:29 AM] [0m
+[38;21m[INFO:07/23/2026 09:26:29 AM] Now running bcftools index ERR4813225/ERR4813225.annot.vcf.gz[0m
+[38;21m[INFO:07/23/2026 09:26:29 AM] [0m
+[38;21m[INFO:07/23/2026 09:26:29 AM] /private/tmp/tbenv/lib/python3.14/site-packages/tbtamr/configs/db_config.json exists.[0m
+[38;21m[INFO:07/23/2026 09:26:29 AM] Will now create directory for ERR4813225[0m
+[38;21m[INFO:07/23/2026 09:26:29 AM] ERR4813225/ERR4813225.annot.vcf.gz exists.[0m
+[38;21m[INFO:07/23/2026 09:26:29 AM] /private/tmp/tbenv/lib/python3.14/site-packages/tbtamr/db/who_v2_catalog.csv exists.[0m
+[38;21m[INFO:07/23/2026 09:26:29 AM] Variants have been extracted from ERR4813225/ERR4813225.annot.vcf.gz[0m
+[38;21m[INFO:07/23/2026 09:26:29 AM] Saving variants.[0m
+[38;21m[INFO:07/23/2026 09:26:29 AM] /private/tmp/tbenv/lib/python3.14/site-packages/tbtamr/configs/db_config.json exists.[0m
+[38;21m[INFO:07/23/2026 09:26:29 AM] /private/tmp/tbenv/lib/python3.14/site-packages/tbtamr/db/who_v2_catalog.csv exists.[0m
+[38;21m[INFO:07/23/2026 09:26:29 AM] /private/tmp/tbenv/lib/python3.14/site-packages/tbtamr/configs/classification_criteria.csv exists.[0m
+[38;21m[INFO:07/23/2026 09:26:29 AM] /private/tmp/tbenv/lib/python3.14/site-packages/tbtamr/configs/interpretation_criteria.csv exists.[0m
+[38;21m[INFO:07/23/2026 09:26:30 AM] Checking that the variant format is as expected.[0m
+[38;21m[INFO:07/23/2026 09:26:30 AM] Variant format is as expected.[0m
+[38;21m[INFO:07/23/2026 09:26:30 AM] Checking that your criteria files are correctly formatted.[0m
+[38;21m[INFO:07/23/2026 09:26:30 AM] Criteria files appear to be formatted correctly.[0m
+[38;21m[INFO:07/23/2026 09:26:30 AM] Applying citeria for interpretation.[0m
+[38;21m[INFO:07/23/2026 09:26:31 AM] Applying citeria for classification of resistance profile.[0m
+[38;21m[INFO:07/23/2026 09:26:31 AM] Generating linelist for reporting.[0m

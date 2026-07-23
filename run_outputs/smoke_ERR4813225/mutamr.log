@@ -1,0 +1,48 @@
+[INFO:2026-07-23 09:25:33 AM] Checking /private/tmp/tbenv/lib/python3.14/site-packages/mutamr/references/Mtb_NC000962.3.fa exists
+[INFO:2026-07-23 09:25:33 AM] Checking ../reads/ERR4813225_1.fastq.gz exists
+[INFO:2026-07-23 09:25:33 AM] Checking ../reads/ERR4813225_2.fastq.gz exists
+[INFO:2026-07-23 09:25:33 AM] Generating alignment using bwa mem.
+[INFO:2026-07-23 09:25:33 AM] Now running bwa mem -T 50 -Y -M -R '@RG\tID:ERR4813225\tSM:ERR4813225' -t 8 /private/tmp/tbenv/lib/python3.14/site-packages/mutamr/references/Mtb_NC000962.3.fa ../reads/ERR4813225_1.fastq.gz ../reads/ERR4813225_2.fastq.gz | samclip --max 10 --ref /private/tmp/tbenv/lib/python3.14/site-packages/mutamr/references/Mtb_NC000962.3.fa.fai | samtools sort -n -l 0 -@ 8 -m 1000M -T /Users/weilu/.claude-science/orgs/22a9d49f-6861-4400-bf3f-0bc89e37b27d/workspaces/1586e53a-123f-40ce-b327-915b67b496b9/.tmp | samtools fixmate -m - - | samtools sort -l 0 -@ 8 -m 1000M -T /Users/weilu/.claude-science/orgs/22a9d49f-6861-4400-bf3f-0bc89e37b27d/workspaces/1586e53a-123f-40ce-b327-915b67b496b9/.tmp | samtools markdup -T /Users/weilu/.claude-science/orgs/22a9d49f-6861-4400-bf3f-0bc89e37b27d/workspaces/1586e53a-123f-40ce-b327-915b67b496b9/.tmp -r -s - - > ERR4813225/ERR4813225.bam
+[INFO:2026-07-23 09:25:58 AM] 
+[INFO:2026-07-23 09:25:58 AM] Indexing bam
+[INFO:2026-07-23 09:25:58 AM] Now running samtools index ERR4813225/ERR4813225.bam
+[INFO:2026-07-23 09:25:58 AM] 
+[INFO:2026-07-23 09:25:58 AM] Now running samtools coverage ERR4813225/ERR4813225.bam > ERR4813225/ERR4813225_stats.txt
+[INFO:2026-07-23 09:26:00 AM] 
+[INFO:2026-07-23 09:26:00 AM] Alignment was successful!
+[INFO:2026-07-23 09:26:00 AM] Calculating sizes for freebayes-parallel
+[INFO:2026-07-23 09:26:00 AM] Reference is 4485070 in length
+[INFO:2026-07-23 09:26:00 AM] Reference will be broken into 15 chunks approx 299004 in size
+[INFO:2026-07-23 09:26:00 AM] Now running fasta_generate_regions.py /private/tmp/tbenv/lib/python3.14/site-packages/mutamr/references/Mtb_NC000962.3.fa 299004 > ERR4813225/ref.txt
+[INFO:2026-07-23 09:26:00 AM] 
+[INFO:2026-07-23 09:26:00 AM] Running freebayes for SNP detection.
+[INFO:2026-07-23 09:26:00 AM] Now running freebayes-parallel ERR4813225/ref.txt 8 -q 13 -m 60 -f /private/tmp/tbenv/lib/python3.14/site-packages/mutamr/references/Mtb_NC000962.3.fa -F 0.1 --haplotype-length -1 ERR4813225/ERR4813225.bam > ERR4813225/ERR4813225.raw.snps.vcf
+[INFO:2026-07-23 09:26:18 AM] 
+[INFO:2026-07-23 09:26:18 AM] Filtering vcf
+[INFO:2026-07-23 09:26:18 AM] Now running bcftools view -c 1 ERR4813225/ERR4813225.raw.snps.vcf | bcftools norm -f /private/tmp/tbenv/lib/python3.14/site-packages/mutamr/references/Mtb_NC000962.3.fa | bcftools filter -e 'FMT/DP<20' | bcftools filter -i 'INFO/SAR>0 && INFO/SAF>0' -Oz -o ERR4813225/ERR4813225.snps.vcf.gz
+[INFO:2026-07-23 09:26:20 AM] 
+[INFO:2026-07-23 09:26:20 AM] Indexing vcf
+[INFO:2026-07-23 09:26:20 AM] Now running bcftools index ERR4813225/ERR4813225.snps.vcf.gz
+[INFO:2026-07-23 09:26:20 AM] 
+[INFO:2026-07-23 09:26:20 AM] Freebayes was successful!!
+[INFO:2026-07-23 09:26:20 AM] Running delly
+[INFO:2026-07-23 09:26:20 AM] Running delly
+[INFO:2026-07-23 09:26:20 AM] Now running OMP_NUM_THREADS=8 delly call -t DEL -g /private/tmp/tbenv/lib/python3.14/site-packages/mutamr/references/Mtb_NC000962.3.fa ERR4813225/ERR4813225.bam -o ERR4813225/ERR4813225.delly.bcf
+[INFO:2026-07-23 09:26:22 AM] 
+[INFO:2026-07-23 09:26:22 AM] Filtering vcf
+[INFO:2026-07-23 09:26:22 AM] Now running bcftools view -c 2 ERR4813225/ERR4813225.delly.bcf | bcftools view -e '(INFO/END-POS)>=100000' -Oz -o ERR4813225/ERR4813225.delly.vcf.gz
+[INFO:2026-07-23 09:26:22 AM] 
+[INFO:2026-07-23 09:26:22 AM] Indexing vcf
+[INFO:2026-07-23 09:26:22 AM] Now running bcftools index ERR4813225/ERR4813225.delly.vcf.gz
+[INFO:2026-07-23 09:26:22 AM] 
+[INFO:2026-07-23 09:26:22 AM] Combining vcf files
+[INFO:2026-07-23 09:26:22 AM] Now running bcftools concat -aD ERR4813225/ERR4813225.delly.vcf.gz ERR4813225/ERR4813225.snps.vcf.gz | bcftools norm -m -both | bcftools view -W -Oz -o ERR4813225/ERR4813225.concat.vcf.gz
+[INFO:2026-07-23 09:26:22 AM] 
+[INFO:2026-07-23 09:26:22 AM] Wrangling snpEff DB
+[INFO:2026-07-23 09:26:22 AM] Annotating vcf file
+[INFO:2026-07-23 09:26:22 AM] Now running snpEff ann -dataDir . -c /private/tmp/tbenv/lib/python3.14/site-packages/mutamr/references/snpEff.config -noLog -noStats Mycobacterium_tuberculosis_h37rv ERR4813225/ERR4813225.concat.vcf.gz > ERR4813225/ERR4813225.annot.vcf
+[INFO:2026-07-23 09:26:28 AM] 
+[INFO:2026-07-23 09:26:28 AM] Now running bgzip -f ERR4813225/ERR4813225.annot.vcf
+[INFO:2026-07-23 09:26:29 AM] 
+[INFO:2026-07-23 09:26:29 AM] Now running bcftools index ERR4813225/ERR4813225.annot.vcf.gz
+[INFO:2026-07-23 09:26:29 AM] 

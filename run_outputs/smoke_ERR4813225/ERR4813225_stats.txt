@@ -1,0 +1,2 @@
+#rname	startpos	endpos	numreads	covbases	coverage	meandepth	meanbaseq	meanmapq
+Chromosome	1	4411532	1142282	4369900	99.0563	39.0837	36	59.2

@@ -1,0 +1,25 @@
+seq_id,UNIQUEID,drug,genomic_interpretation,genomic_call,genomic_mechanism,phenotype_call,phenotype_MIC,concordant
+ERR4813225,site.05.subj.LS-0798.lab.MA-05826-18.iso.1,INH,Susceptible (not reportable),S,Rv1129c_p.Ser480Pro (Uncertain),S,<=0.025,True
+ERR4813225,site.05.subj.LS-0798.lab.MA-05826-18.iso.1,RIF,Susceptible (not reportable),S,Rv1129c_p.Ser480Pro (Uncertain),S,<=0.03,True
+ERR4813225,site.05.subj.LS-0798.lab.MA-05826-18.iso.1,EMB,Susceptible (not reportable),S,embB_p.Pro731Leu (Uncertain),S,0.5,True
+ERR8975345,site.10.subj.YA00067901.lab.YA00067901.iso.1,INH,Susceptible,S,No mechanisms identified,S,0.05,True
+ERR8975345,site.10.subj.YA00067901.lab.YA00067901.iso.1,RIF,Susceptible (not reportable),S,nusG_c.-113G>A (Uncertain),S,<=0.06,True
+ERR8975345,site.10.subj.YA00067901.lab.YA00067901.iso.1,EMB,Susceptible,S,No mechanisms identified,S,1.0,True
+ERR3287775,site.05.subj.PMFR-0717.lab.MFR-175.iso.1,INH,Resistant,R,katG_p.Ser315Thr (High),R,1.6,True
+ERR3287775,site.05.subj.PMFR-0717.lab.MFR-175.iso.1,RIF,Resistant,R,rpoB_p.Asp435Val (High),R,>4,True
+ERR3287775,site.05.subj.PMFR-0717.lab.MFR-175.iso.1,EMB,Resistant,R,embB_p.Met306Val (High);embA_p.Asn54Asp (Uncertain);ubiA_p.Ala35Ser (Uncertain),R,>8,True
+ERR4809348,site.10.subj.YA00046936.lab.YA00046936.iso.1,INH,Low-level resistant,R,inhA_c.-154G>A (High);inhA_p.Ile194Thr (Uncertain),R,>1.6,True
+ERR4809348,site.10.subj.YA00046936.lab.YA00046936.iso.1,RIF,Resistant,R,rpoB_p.Ser450Leu (High);rpoB_p.Gln975His (Uncertain);rpoC_p.Val1252Leu (Uncertain),R,>4,True
+ERR4809348,site.10.subj.YA00046936.lab.YA00046936.iso.1,EMB,Resistant,R,embB_p.Met306Val (High);aftB_p.Val293Met (Uncertain),R,>8,True
+ERR4831755,site.08.subj.02TB0293.lab.17746.iso.1,INH,Resistant,R,katG_p.Ser315Thr (High),R,1.6,True
+ERR4831755,site.08.subj.02TB0293.lab.17746.iso.1,RIF,Susceptible,S,No mechanisms identified,S,<=0.03,True
+ERR4831755,site.08.subj.02TB0293.lab.17746.iso.1,EMB,Susceptible (not reportable),S,aftB_p.Ser273Leu (Uncertain),S,0.5,True
+ERR3287635,site.05.subj.PMK-0956.lab.MK-0871.iso.1,INH,Low-level resistant,R,inhA_c.-154G>A (High),R,0.2,True
+ERR3287635,site.05.subj.PMK-0956.lab.MK-0871.iso.1,RIF,Resistant,R,rpoB_p.Ser450Leu (High),R,>4,True
+ERR3287635,site.05.subj.PMK-0956.lab.MK-0871.iso.1,EMB,Susceptible,S,No mechanisms identified,S,2.0,True
+ERR8975009,site.10.subj.KD01504821.lab.KD01504821.iso.1,INH,Susceptible,S,No mechanisms identified,S,0.1,True
+ERR8975009,site.10.subj.KD01504821.lab.KD01504821.iso.1,RIF,Low-level resistant,R,rpoB_p.Leu430Pro (High),R,1.0,True
+ERR8975009,site.10.subj.KD01504821.lab.KD01504821.iso.1,EMB,Susceptible,S,No mechanisms identified,S,2.0,True
+ERR4811536,site.02.subj.1077.lab.2014184058.iso.1,INH,Resistant,R,katG_p.Ser315Asn (High);Rv1258c_LoF (Uncertain),R,>1.6,True
+ERR4811536,site.02.subj.1077.lab.2014184058.iso.1,RIF,Resistant,R,rpoB_p.His445Leu (High),S,0.5,False
+ERR4811536,site.02.subj.1077.lab.2014184058.iso.1,EMB,Resistant,R,embB_p.Met306Val (High);embA_c.-15C>G (Uncertain);embA_p.Arg380Leu (Uncertain);embR_c.-50T>C (Uncertain);ubiA_p.Ala237Thr (Uncertain),R,>8,True

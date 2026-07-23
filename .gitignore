@@ -1,0 +1,22 @@
+# Large sequencing data — never commit; fetch from ENA (see data/sample_manifest.csv)
+*.fastq
+*.fastq.gz
+*.fq.gz
+*.bam
+*.bam.bai
+*.cram
+*.sam
+
+# tbtAMR working / reference build artifacts
+tbenv/
+tbhome/
+*.fa
+*.fa.fai
+*.fasta
+*.dict
+snpEff*/
+
+# OS / editor cruft
+.DS_Store
+__pycache__/
+*.pyc
