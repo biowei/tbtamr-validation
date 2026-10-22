@@ -32,6 +32,83 @@ Tool: https://github.com/MDU-PHL/tbtamr
 
 ![Validation figure](deliverables/deliverable2_validation.png)
 
+## Cross-check: tbwgs vs tbtamr
+
+The same 8 isolates were run through [biowei/tbwgs](https://github.com/biowei/tbwgs), a
+Nextflow MTB WGS pipeline (TB-Profiler 6.7.0 with the frozen tbdb who_v2+ @ `c4167762`).
+Its per-sample, per-drug calls were compared with the tbtamr results above and with the
+CRyPTIC phenotypes.
+
+![tbwgs vs tbtamr](tbwgs_comparison/tbwgs_vs_tbtamr.png)
+
+| Comparison | Agreement |
+|---|---|
+| tbwgs vs tbtamr, 8 isolates × 15 drugs (rule from tbwgs PR #9) | **119/120 (99.2%)** |
+| tbwgs vs tbtamr, first run (rule before PR #9) | 117/120 (97.5%) |
+| tbwgs vs phenotype (INH, RIF, EMB) | 23/24 (95.8%) |
+| tbtamr vs phenotype (INH, RIF, EMB) | 23/24 (95.8%) |
+
+- Every resistant call agrees, and so does the mutation behind it. Examples are
+  `rpoB S450L`, `katG S315T`, `inhA c.-154G>A`, `embB M306V`, `rrs n.1401A>G` and `gyrA D94G`.
+- No disagreement is R against S. Each disagreement is a drug that tbwgs calls
+  `uninterpretable` because a gene has a median depth below 10×, and tbtamr calls susceptible.
+  - **ERR4813225, linezolid:** the median depth of `rrl` is 7×, against 36× for the whole genome.
+    This is a real coverage gap, so the call stays `uninterpretable`.
+  - **ERR4813225, capreomycin** and **ERR8975345, ethionamide:** these are caused by low-coverage
+    genes that carry no resistance-graded mutation for the drug. One is `rrl` for capreomycin.
+    The other is a real `Rv3083` deletion. tbwgs PR #9 checks only genes that carry an
+    "Assoc w R" or "Assoc w R - Interim" mutation, so both calls are now `not_detected`.
+- The one disagreement with phenotype is the same for both tools. It is ERR4811536 RIF,
+  `rpoB p.His445Leu`, which is borderline at MIC 0.5 mg/L (see Deliverable 2).
+- tbtamr outputs no lineage. tbwgs reports these lineages: L1.2.2.2, L2.2.1 (×2), L4.1.2, L4.1.2.1,
+  L4.3.3, L4.4.1.1 and L4.8. No mixed lineage was found. No two isolates are within 12 SNPs
+  (the minimum distance is 205).
+- The run also set two QC thresholds in tbwgs:
+  - `mtb_min_mtbc_fraction = 90` (flag only). Clean isolates were 96.4–97.6% MTBC.
+    ERR4831755 was 75.2%, with 17% unclassified reads and 2% *M. abscessus*, but its calls were
+    still correct.
+  - `mtb_max_consensus_n = 10`. The fixed mask alone makes 7.07% of the consensus N.
+    The isolates were 7.2–8.5% N.
+
+### How the comparison was done
+
+```mermaid
+flowchart LR
+    A[ENA accessions<br/>data/sample_manifest.csv] --> B[Reads from NCBI SRA mirror<br/>read counts checked]
+    B --> C[tbwgs dev @ 51ded8c<br/>-profile conda]
+    C --> D[mtb_summary.tsv<br/>resistant / not_detected / uninterpretable]
+    E[tbtamr results<br/>results/tbtamr_raw_results.csv] --> F[compare_tbwgs_tbtamr.py]
+    D --> F
+    G[CRyPTIC phenotypes] --> F
+    F --> H[per_drug_calls_*.tsv]
+    H --> I[plot_tbwgs_comparison.py<br/>tbwgs_vs_tbtamr.png]
+```
+
+1. Fetch the reads for the 8 accessions. ENA could not be reached from the compute
+   environment, so the reads came from the NCBI SRA open-data mirror (`fasterq-dump`).
+   The read counts match the manifest.
+2. Run tbwgs with default thresholds and the Kraken2 `k2_standard_08gb_20240904` database.
+   All commands are in `tbwgs_comparison/code/run_tbwgs.sh`.
+3. Map the calls to one scale. For tbwgs, `resistant` → R, `not_detected` → S and
+   `uninterpretable` → U. For tbtamr, "Resistant" and "Low-level resistant" → R, and
+   "Susceptible" and "Susceptible (not reportable)" → S.
+4. Compare the 15 drugs that both tools report, for each sample, against tbtamr. Compare
+   INH, RIF and EMB against phenotype.
+5. Recompute the summary with the PR #9 rule (`mtb_summary.py` 1.1.0) from the same
+   TB-Profiler results, and compare again.
+
+To regenerate the tables and the figure:
+
+```bash
+for v in 1.0.0 1.1.0; do
+  python tbwgs_comparison/code/compare_tbwgs_tbtamr.py \
+    tbwgs_comparison/tbwgs_outputs/mtb_summary_v$v.tsv \
+    results/tbtamr_raw_results.csv data/sample_manifest.csv \
+    tbwgs_comparison/results/per_drug_calls_v$v.tsv
+done
+python tbwgs_comparison/code/plot_tbwgs_comparison.py   # needs matplotlib
+```
+
 ## Repository layout
 
 ```
@@ -46,6 +123,12 @@ results/        Analysis products (tidy matrix, per-drug metrics, raw tbtAMR
 code/           analyze_validation.py, run_tbtamr.sh, env manifest, install log
 logs/           Per-sample stderr command logs
 run_outputs/    Per-isolate tbtAMR results + variant tables (BAMs excluded)
+tbwgs_comparison/
+  tbwgs_vs_tbtamr.png  Comparison figure
+  tbwgs_outputs/       tbwgs summary (before/after PR #9), TB-Profiler JSON,
+                       Kraken2 reports, QC, SNP distances, software versions
+  results/             per_drug_calls_v1.0.0.tsv / v1.1.0.tsv (one row per sample × drug)
+  code/                run_tbwgs.sh, compare_tbwgs_tbtamr.py, plot_tbwgs_comparison.py
 ```
 
 ## Reproduce
